@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  test-app:
+    image: ashoka007/otelv2-test-app:latest
+    container_name: test-app
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/ping"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  build-app:
+    image: ashoka007/otelv2-build-app:latest
+    container_name: build-app
+    build:
+      context: ./build-app
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/ping"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+
+  workflow-app:
+    image: ashoka007/otelv2-workflow-app:latest
+    container_name: workflow-app
+    build:
+      context: ./workflow-app
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - BUILD_URL=http://build-app:5001
+      - TEST_URL=http://test-app:3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
