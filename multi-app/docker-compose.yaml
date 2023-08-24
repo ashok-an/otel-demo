@@ -15,6 +15,15 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    environment:
+      - OTEL_SERVICE_NAME=test-app
+      - OTEL_TRACES_EXPORTER=console
+      - OTEL_METRICS_EXPORTER=console
+      - OTEL_LOGS_EXPORTER=console
+      - OTEL_LOG_LEVEL=DEBUG
+      - OTEL_PYTHON_LOG_CORRELATION=true
+      - OTEL_PYTHON_LOG_LEVEL=debug
+      - OTEL_EXPORTER_OTLP_ENDPOINT=0.0.0.0:4317
 
   build-app:
     image: ashoka007/otelv2-build-app:latest
@@ -30,7 +39,15 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
-
+    environment:
+      - OTEL_SERVICE_NAME=build-app
+      - OTEL_TRACES_EXPORTER=console
+      - OTEL_METRICS_EXPORTER=console
+      - OTEL_LOGS_EXPORTER=console
+      - OTEL_LOG_LEVEL=DEBUG
+      - OTEL_PYTHON_LOG_CORRELATION=true
+      - OTEL_PYTHON_LOG_LEVEL=debug
+      - OTEL_EXPORTER_OTLP_ENDPOINT=0.0.0.0:4317
 
   workflow-app:
     image: ashoka007/otelv2-workflow-app:latest
@@ -40,12 +57,20 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-    environment:
-      - BUILD_URL=http://build-app:5001
-      - TEST_URL=http://test-app:3001
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
       interval: 1m30s
       timeout: 30s
       retries: 5
       start_period: 30s
+    environment:
+      - BUILD_URL=http://build-app:5001
+      - TEST_URL=http://test-app:3001
+      - OTEL_SERVICE_NAME=workflow-app
+      - OTEL_TRACES_EXPORTER=console
+      - OTEL_METRICS_EXPORTER=console
+      - OTEL_LOGS_EXPORTER=console
+      - OTEL_LOG_LEVEL=DEBUG
+      - OTEL_PYTHON_LOG_CORRELATION=true
+      - OTEL_PYTHON_LOG_LEVEL=debug
+      - OTEL_EXPORTER_OTLP_ENDPOINT=0.0.0.0:4317

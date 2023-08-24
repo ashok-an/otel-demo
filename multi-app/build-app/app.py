@@ -52,4 +52,4 @@ def do_build(steps: int = 3):
 if __name__ == '__main__':
     port = 5001
     logger.debug(f'Starting app on port {port}')
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)
